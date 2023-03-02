@@ -1,15 +1,13 @@
 module cordic_stage(
     input logic         clock,
     input logic         reset,
-    input logic [15:0]  k,
+    input logic [31:0]  k,
     input logic [15:0]  c,
     input logic [15:0]  x,
     input logic [15:0]  y,
     input logic [15:0]  z,
     input logic         valid,
 
-    output logic [15:0] k_out,
-    output logic [15:0] c_out,
     output logic [15:0] x_out,
     output logic [15:0] y_out,
     output logic [15:0] z_out,
@@ -21,21 +19,22 @@ module cordic_stage(
     logic [15:0] ty;
     logic [15:0] tz;
 
+    logic [15:0] x_reg;
+    logic [15:0] y_reg;
+    logic [15:0] z_reg;
+    logic        valid_reg;
+
     always_ff @(posedge clock or posedge reset) begin
         if (reset) begin
-            k_out <= 0;
-            c_out <= 0;
-            x_out <= 0;
-            y_out <= 0;
-            z_out <= 0;
-            valid_out <= 0;
+            x_reg <= 0;
+            y_reg <= 0;
+            z_reg <= 0;
+            valid_reg <= 0;
         end else begin
-            k_out <= k;
-            c_out <= c;
-            x_out <= tx;
-            y_out <= ty;
-            z_out <= tz;
-            valid_out <= valid;
+            x_reg <= tx;
+            y_reg <= ty;
+            z_reg <= tz;
+            valid_reg <= valid;
         end
     end
 
@@ -45,4 +44,10 @@ module cordic_stage(
         ty = y + (((x >> k) ^ d) - d);
         tz = z - ((c ^ d) - d);
     end
+
+    assign x_out <= x_reg;
+    assign y_out <= y_reg;
+    assign z_out <= z_reg;
+    assign valid_out <= valid_reg;
+
 endmodule
