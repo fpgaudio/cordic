@@ -27,7 +27,7 @@ assign p_fixed_rd_en = ~p_fixed_empty;
 fifo #(
     .FIFO_BUFFER_SIZE(1024),
     .FIFO_DATA_WIDTH(32)
-) p_fixed (
+) p_fixed_fifo (
     .reset(reset),
     .wr_clk(clock),
     .wr_en(in_wr_en),
@@ -57,6 +57,7 @@ fifo #(
     .reset(reset),
     .wr_clk(clock),
     .wr_en(cord_valid_out),
+    .din(s_out),
     .full(sin_full),
     .rd_clk(clock),
     .rd_en(sin_rd_en),
@@ -66,11 +67,12 @@ fifo #(
 
 fifo #(
     .FIFO_BUFFER_SIZE(1024),
-    .FIFO_DATA_WIDTH(16),
+    .FIFO_DATA_WIDTH(16)
 ) cos_fifo (
     .reset(reset),
     .wr_clk(clock),
     .wr_en(cord_valid_out),
+    .din(c_out),
     .full(cos_full),
     .rd_clk(clock),
     .rd_en(cos_rd_en),

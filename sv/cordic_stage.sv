@@ -39,15 +39,15 @@ module cordic_stage(
     end
 
     always_comb begin 
-        d = (z >= 0) ? 0 : -1;
-        tx = x - (((y >> k) ^ d) - d);
-        ty = y + (((x >> k) ^ d) - d);
-        tz = z - ((c ^ d) - d);
+        d = ($signed(z) >= 0) ? 16'h0000 : 16'hFFFF;
+        tx = $signed(x) - $signed($signed(($signed(y) >>> k) ^ d) - $signed(d));
+        ty = $signed(y) + $signed($signed(($signed(x) >>> k) ^ d) - $signed(d));
+        tz = $signed(z) - $signed($signed(c ^ d) - $signed(d));
     end
 
-    assign x_out <= x_reg;
-    assign y_out <= y_reg;
-    assign z_out <= z_reg;
-    assign valid_out <= valid_reg;
+    assign x_out = x_reg;
+    assign y_out = y_reg;
+    assign z_out = z_reg;
+    assign valid_out = valid_reg;
 
 endmodule

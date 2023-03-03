@@ -63,7 +63,7 @@ void cordic_stage(short k, short c, short *x, short *y, short *z)
 
 void cordic(int rad, short *s, short *c)
 {
-    short x = CORDIC_1K;
+    short x = (short)CORDIC_1K;
     short y = 0;
     int r = rad;
 
@@ -83,11 +83,12 @@ void cordic(int rad, short *s, short *c)
         y = -y;
     }
 
-    short z = r;
+    short z = (short)r;
 
     for ( int k = 0; k < CORDIC_NTAB; k++ )
     {
         cordic_stage(k, CORDIC_TABLE[k], &x, &y, &z);
+        // printf("STAGE %d: %04x\n", k, CORDIC_TABLE[k]);
     }  
     
     *c = x; 
@@ -97,9 +98,9 @@ void cordic(int rad, short *s, short *c)
 
 int main(int argc, char **argv)
 {
-    FILE * rad_file = fopen("rad.txt", "w");
-    FILE * sin_file = fopen("sin.txt", "w");
-    FILE * cos_file = fopen("cos.txt", "w");
+    FILE * rad_file = fopen("rad_new.txt", "w");
+    FILE * sin_file = fopen("sin_new.txt", "w");
+    FILE * cos_file = fopen("cos_new.txt", "w");
     if ( sin_file == NULL || cos_file == NULL )
     {
         printf("Unable to open file.\n");
@@ -145,6 +146,16 @@ int main(int argc, char **argv)
 
     fclose( sin_file );
     fclose( cos_file );
+
+    printf("PI: %08x\n", PI);
+    printf("HALF_PI: %08x\n", HALF_PI);
+    printf("TWO_PI: %08x\n", TWO_PI);
+    printf("CORDIC_1K: %08x\n", CORDIC_1K);
+    
+    printf("NEG_PI: %08x\n", -PI);
+    printf("NEG_HALF_PI: %08x\n", -HALF_PI);
+    printf("NEG_TWO_PI: %08x\n", -TWO_PI);
+    printf("NEG_CORDIC_1K: %08x\n", -CORDIC_1K);
 
     return 0;
 }

@@ -1,49 +1,54 @@
 `include "cordic_config.sv"
 
 module cordic (
-    input  logic        clock;
-    input  logic        reset;
+    input  logic        clock,
+    input  logic        reset,
      
     input  logic [31:0] rad,
-    input  logic        valid_in
+    input  logic        valid_in,
 
     output logic [15:0] s_out,
     output logic [15:0] c_out,
     output logic        valid_out
 );
 
-localparam logic [15:0][15:0] CORDIC_TABLE = '{
+logic [0:15][15:0] CORDIC_TABLE = '{
     16'h3243, 16'h1DAC, 16'h0FAD, 16'h07F5, 16'h03FE, 16'h01FF, 16'h00FF, 16'h007F, 
     16'h003F, 16'h001F, 16'h000F, 16'h0007, 16'h0003, 16'h0001, 16'h0000, 16'h0000
 };
 
 logic [15:0] x;
+logic [31:0] pre_x;
 logic [15:0] y;
-logic [31:0] r;
+logic [31:0] r, tr;
 logic [15:0] z;
 
-logic [16:0][15:0] x_stage;
-logic [16:0][15:0] y_stage;
-logic [16:0][15:0] z_stage;
-logic [16:0] valid_stage;
+logic [0:16][15:0] x_stage;
+logic [0:16][15:0] y_stage;
+logic [0:16][15:0] z_stage;
+logic [0:16][0:0] valid_stage;
 
 always_comb begin 
-    x = `CORDIC_1K[15:0];
+    pre_x = `CORDIC_1K;
+    x = pre_x[15:0];
     y = '0;
-    r = rad;
 
-    if ( r > `PI ) begin
-        r -= `TWO_PI;
-    end else if (r < -`PI) begin
-        r += `TWO_PI;
+    if ( $signed(rad) > $signed(`PI) ) begin
+        tr = $signed(rad) - $signed(`TWO_PI);
+    end else if ($signed(rad) < $signed(-`PI)) begin
+        tr = $signed(rad) + $signed(`TWO_PI);
+    end else begin
+        tr = rad;
     end
 
-    if ( r > `HALF_PI ) begin
-        r -= `PI;
-        x = -x;
-    end else if ( r < `HALF_PI ) begin
-        r += `PI;
-        x = -x;
+    if ( $signed(tr) > $signed(`HALF_PI) ) begin
+        r = $signed(tr) - $signed(`PI);
+        x = $signed(-x);
+    end else if ( $signed(tr) < $signed(-`HALF_PI) ) begin
+        r = $signed(tr) + $signed(`PI);
+        x = $signed(-x);
+    end else begin
+        r = tr;
     end
 
     z = r[15:0];
@@ -61,7 +66,7 @@ generate
         cordic_stage stage (
             .clock(clock),
             .reset(reset),
-            .k(integer'(k)),
+            .k($unsigned(k)),
             .c(CORDIC_TABLE[k]),
             .x(x_stage[k]),
             .y(y_stage[k]),
@@ -77,5 +82,6 @@ endgenerate
 
 assign s_out = y_stage[16];
 assign c_out = x_stage[16];
+assign valid_out = valid_stage[16];
 
 endmodule
