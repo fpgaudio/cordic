@@ -40,7 +40,7 @@ fifo #(
 );
 
 
-cordic cordic_inst (
+cordic cordic_top_inst (
     .clock(clock),
     .reset(reset),
     .rad(rad),

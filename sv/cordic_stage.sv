@@ -15,8 +15,8 @@ module cordic_stage(
 );
 
     logic [15:0] d;
-    logic [15:0] tx;
-    logic [15:0] ty;
+    logic [15:0] tx_0, tx_1, tx_2, tx_3;
+    logic [15:0] ty_0, ty_1, ty_2, ty_3;
     logic [15:0] tz;
 
     logic [15:0] x_reg;
@@ -31,8 +31,8 @@ module cordic_stage(
             z_reg <= 0;
             valid_reg <= 0;
         end else begin
-            x_reg <= tx;
-            y_reg <= ty;
+            x_reg <= tx_3;
+            y_reg <= ty_3;
             z_reg <= tz;
             valid_reg <= valid;
         end
@@ -40,9 +40,15 @@ module cordic_stage(
 
     always_comb begin 
         d = ($signed(z) >= 0) ? 16'h0000 : 16'hFFFF;
-        tx = $signed(x) - $signed($signed(($signed(y) >>> k) ^ d) - $signed(d));
-        ty = $signed(y) + $signed($signed(($signed(x) >>> k) ^ d) - $signed(d));
-        tz = $signed(z) - $signed($signed(c ^ d) - $signed(d));
+        tx_0 = $signed(y) >>> k;
+        tx_1 = tx_0 ^ d;
+        tx_2 = tx_1 - d;
+        tx_3 = x - tx_2; 
+        ty_0 = $signed(x) >>> k;
+        ty_1 = ty_0 ^ d;
+        ty_2 = ty_1 - d;
+        ty_3 = y + ty_2;
+        tz = $signed($signed(z) - $signed($signed(c ^ d) - $signed(d)));
     end
 
     assign x_out = x_reg;

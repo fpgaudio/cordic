@@ -1,0 +1,12 @@
+LUTs for combinational functions (total_luts): 1732	
+Non I/O Registers (non_io_reg): 780
+I/O Pins: 72	
+I/O registers (total_io_reg): 0
+DSP Blocks (dsp_used): 0 (15)
+Memory Bits: 65536
+
+Clock Speed: 62.6 MHz
+Performance: 100 million calc/sec
+
+Clock Cycles: 760
+

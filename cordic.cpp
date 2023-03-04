@@ -85,11 +85,14 @@ void cordic(int rad, short *s, short *c)
 
     short z = (short)r;
 
+
     for ( int k = 0; k < CORDIC_NTAB; k++ )
     {
+        printf("k: %04x, CORDIC_TABLE[k]: %04x, x: %04x, y: %04x, z: %04x\n", k, CORDIC_TABLE[k], x, y, z);
         cordic_stage(k, CORDIC_TABLE[k], &x, &y, &z);
         // printf("STAGE %d: %04x\n", k, CORDIC_TABLE[k]);
     }  
+    printf("k: %04x, x: %04x, y: %04x, z: %04x\n", 16, x, y, z);
     
     *c = x; 
     *s = y;
@@ -98,9 +101,9 @@ void cordic(int rad, short *s, short *c)
 
 int main(int argc, char **argv)
 {
-    FILE * rad_file = fopen("rad_new.txt", "w");
-    FILE * sin_file = fopen("sin_new.txt", "w");
-    FILE * cos_file = fopen("cos_new.txt", "w");
+    FILE * rad_file = fopen("rad_once.txt", "w");
+    FILE * sin_file = fopen("sin_once.txt", "w");
+    FILE * cos_file = fopen("cos_once.txt", "w");
     if ( sin_file == NULL || cos_file == NULL )
     {
         printf("Unable to open file.\n");
@@ -130,7 +133,7 @@ int main(int argc, char **argv)
 
     printf("theta\trads\tsin\tc_sin\tsin_err\tcos\tc_cos\tcos_err\n");
 
-    for ( int i = -360; i <= 360; i++ )
+    for ( int i = -360; i <= -360; i++ )
     {
         float p = i * M_PI / 180;        
         int p_fixed = QUANTIZE_F(p);
