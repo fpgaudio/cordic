@@ -62,7 +62,7 @@ end
 
 genvar k;
 generate
-    for (k = 0; k < `CORDIC_NTAB; k++) begin
+    for (k = 0; k < `CORDIC_NTAB; k++) begin: generate_cordic_stage
         cordic_stage stage (
             .clock(clock),
             .reset(reset),
